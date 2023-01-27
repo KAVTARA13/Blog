@@ -11,11 +11,7 @@
         <h1>Blog Application</h1>
         <hr/>
         <div class="posts-container">
-            <div class="post" th:each="post : ${posts}">
-                <h2><a th:href="@{'/posts/'+${post.name}}"
-                       th:text="${post.title}}">Title</a></h2>
-                <h5 th:text="${post.body}">body text</h5>
-            </div>
+            <p th:text="${data}"></p>
         </div>
     </div>
 </body>

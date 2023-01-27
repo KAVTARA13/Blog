@@ -1,5 +1,7 @@
 package com.example.blogapplication.api;
 
+import com.example.blogapplication.models.RequestBody;
+import com.example.blogapplication.models.TrendsResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -9,30 +11,24 @@ import org.json.JSONObject;
 import static io.restassured.RestAssured.given;
 
 public class GPT {
-    public static String token = "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";
+    public static String token = "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";
     public static Response getBlog(String about){
         RestAssured.baseURI = "https://api.openai.com/v1/completions";
-        RequestSpecification request = RestAssured.given();
-        JSONObject requestParams = new JSONObject();
-        request.body(requestParams);
-        requestParams.put("model", "text-davinci-002");
-        requestParams.put("prompt", "Write a blog about "+about);
-        requestParams.put("temperature", 1);
-        requestParams.put("max_tokens", 4090);
-        io.restassured.response.Response response = request.headers(
-                        "Authorization",
-                        "Bearer " + token,
-                        "Content-Type",
-                        ContentType.JSON,
-                        "Accept",
-                        ContentType.JSON)
-                .when()
-                .post()
-                .then()
-                .contentType(ContentType.JSON)
-                .extract()
-                .response();
+        Response response =  given()
+                .header("Content-Type","application/json")
+                .header("Authorization", "Bearer "+token)
+                .body(new RequestBody("text-davinci-002","Write a blog about "+about,1,4090))
+                .post();
         System.out.println(response.then().log().all());
         return response;
+    }
+    public static TrendsResponse trends() {
+
+        RestAssured.baseURI = "https://trends.google.com/trends/api/dailytrends?hl=en-US&tz=-240&geo=US&ns=15";
+        Response response = given()
+                .header("Content-Type", "application/json")
+                .get();
+        System.out.println(response.then().log().all());
+        return response.as(TrendsResponse.class);
     }
 }
